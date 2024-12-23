@@ -8,7 +8,7 @@ export const authenticateUser = async (req, res, next) => {
     }
     
     try {
-        const decoded = jwt.verify(token, process.env.jwt);
+        const decoded = jwt.verify(token, process.env.JWT);
       const user = await Users.findByPk(decoded.UserId); 
       if (!user) {
         return res.status(401).json({ error: 'User not found' });
