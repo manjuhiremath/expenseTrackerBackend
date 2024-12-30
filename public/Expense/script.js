@@ -1,26 +1,59 @@
 const isPremium = window.localStorage.getItem("isPremium");
 const token = window.localStorage.getItem("token");
 const UserId = window.localStorage.getItem('user');
-
+console.log(UserId);
 document.getElementById('addexpense').addEventListener('click', async (event) => {
     event.preventDefault();
-    const amount = document.getElementById("amount").value;
-    const description = document.getElementById("description").value;
-    const category = document.getElementById("category").value;
-    // const token = window.localStorage.getItem('token');
+
+    // Get input values
+    const amount = document.getElementById("amount");
+    const description = document.getElementById("description");
+    const category = document.getElementById("category");
+    const errorContainer = document.getElementById("error");
+
+    // Clear previous error messages
+    errorContainer.innerText = "";
+
+    // Validate fields
+    if (!amount.value.trim()) {
+        errorContainer.innerText = "Amount is required.";
+        amount.focus();
+        return;
+    }
+
+    if (!description.value.trim()) {
+        errorContainer.innerText = "Description is required.";
+        description.focus();
+        return;
+    }
+
+    if (!category.value.trim()) {
+        errorContainer.innerText = "Category is required.";
+        category.focus();
+        return;
+    }
+
     try {
-        const response = await axios.post(`http://localhost:3000/api/expense`, { amount, description, category }, { headers: { 'authorization': token } });
+        const token = window.localStorage.getItem('token'); // Uncomment if needed
+        const response = await axios.post(
+            `http://localhost:3000/api/expense`,
+            { amount: amount.value, description: description.value, category: category.value },
+            { headers: { 'authorization': token } }
+        );
 
         if (response.status === 201) {
             console.log(response.data);
             location.reload();
         } else {
+            errorContainer.innerText = "Failed to add expense. Please try again.";
             console.log(response.data);
         }
     } catch (error) {
+        errorContainer.innerText = "An error occurred. Please try again later.";
         console.error(error);
     }
 });
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     const isPremium = window.localStorage.getItem("isPremium");
@@ -38,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('rzp-btn-div').style.display = 'block';
         document.getElementById('content-leadboard').style.display = 'none';
     }
-    // const contentElement = document.getElementById('content-expense');
+    
 
     try {
         // const response = await axios.get('http://localhost:3000/api/expense', {
@@ -70,33 +103,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (premiumUserData && premiumUserData.length > 0) {
                 const leaderboardContainer = document.getElementById('content-leadboard');
 
+                // Create and style the leaderboard header
                 const leaderboardHeader = document.createElement('h4');
                 leaderboardHeader.textContent = 'Expenses Leaderboard';
-                leaderboardHeader.classList.add('text-center', 'my-4'); // Added display-4 for larger text
-
+                leaderboardHeader.classList.add('text-center');
+                leaderboardHeader.style.marginBottom = '20px';
                 leaderboardContainer.appendChild(leaderboardHeader);
-
+                
+                // Create and style the table
                 const table = document.createElement('table');
-                table.classList.add('table', 'table-bordered', 'table-striped', 'table-hover', 'table-responsive'); // Added responsive class for better layout on small screens
-
+                table.classList.add('table', 'table-bordered', 'table-striped', 'table-hover');
+                table.style.width = '50%';
+                table.style.margin = '0 auto'; // Center the table
+                
+                // Add header row
                 const headerRow = document.createElement('tr');
                 headerRow.innerHTML = `
-                    <th>Name</th>
-                    <th>Amount</th>
+                    <th style="text-align: center; padding: 8px;">Name</th>
+                    <th style="text-align: center; padding: 8px;">Amount</th>
                 `;
                 table.appendChild(headerRow);
-
+                
+                // Sort data and populate rows
                 premiumUserData.sort((a, b) => b.totalamount - a.totalamount);
-
                 premiumUserData.forEach(user => {
                     const expenseRow = document.createElement('tr');
                     expenseRow.innerHTML = `
-                        <td>${user.name}</td>
-                        <td>$${user.totalamount || 0}</td> <!-- Format amount to 2 decimal places -->
+                        <td style="text-align: center; padding: 8px;">${user.name}</td>
+                        <td style="text-align: center; padding: 8px;">$${user.totalamount || 0}</td>
                     `;
                     table.appendChild(expenseRow);
                 });
-
+                
                 leaderboardContainer.appendChild(table);
 
             } else {
@@ -109,6 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (err) {
         console.log(err);
+        const contentElement = document.getElementById('content-expense');
         contentElement.innerHTML = '<p>No expenses found for this user.</p>';
     }
 });
@@ -135,6 +174,7 @@ document.getElementById('rzp-btn').addEventListener('click', async () => {
                 orderid: options.order_id,
                 paymentid: response.razorpay_payment_id
             }, { headers: { 'authorization': token } })
+            window.location.href = '/Login/login.html';
             window.location.setItem('isPremium', 'true');
             alert("Your Premium activated!");
         }

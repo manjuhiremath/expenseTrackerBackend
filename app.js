@@ -30,7 +30,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // const logsData = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: 'a' });
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
 app.use(compression());
 // app.use(morgan('combined',{stream:logsData}))
@@ -39,10 +39,12 @@ app.use(json());
 app.use("/api/premium", orderRoutes);
 app.use("/api/expense", expenseRouter);
 app.use("/api", loginRouter);
+// app.use((req, res) => {
+//   res.sendFile(path.join(__dirname, 'public', path.normalize(req.url)));
+// });
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'public', path.normalize(req.url)));
+  res.status(404).send('File not found');
 });
-
 const start = async () => {
   try {
     app.listen(process.env.PORT, () => {

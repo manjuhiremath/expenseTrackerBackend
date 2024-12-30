@@ -1,10 +1,17 @@
+
 const BASE_URL = "http://localhost:3000/api/";
 
 function displayMessage(elementId, message, isError = false) {
-  const messageElement = document.getElementById(elementId);
-  messageElement.textContent = message;
-  messageElement.className = isError ? "error" : "success";
-}
+    const messageElement = document.getElementById(elementId);
+    messageElement.textContent = message;
+    messageElement.className = isError ? "error" : "success";
+  
+    setTimeout(() => {
+      messageElement.textContent = "";
+      messageElement.className = "";
+    }, 2000); 
+  }
+  
 
 function validateEmail(email) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -12,7 +19,7 @@ function validateEmail(email) {
 }
 
 document.getElementById("signup-button").addEventListener("click", async (event) => {
-  event.preventDefault(); // Prevent default form submission
+  event.preventDefault(); 
 
   const name = document.getElementById("signup-name").value;
   const email = document.getElementById("signup-email").value;
@@ -49,7 +56,7 @@ document.getElementById("signup-button").addEventListener("click", async (event)
 });
 
 document.getElementById("login-button").addEventListener("click", async (event) => {
-  event.preventDefault(); // Prevent default form submission
+  event.preventDefault(); 
 
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;

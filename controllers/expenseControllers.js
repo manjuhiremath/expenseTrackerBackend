@@ -128,7 +128,6 @@ export const createExpense = async (req, res) => {
 export const getUserExpense = async (req, res) => {
     try {
         const user = req.user.id;
-        // console.log(user)
         const userExpense = await Expense.findAll({ where: { UserId: user } });
         if (userExpense.length === 0) {
             return res.status(404).json({ message: "No expenses found for this user." });
@@ -143,6 +142,8 @@ export const getUserExpense = async (req, res) => {
 export const getUserExpensePagination = async (req, res) => {
     try {
         const user = req.user.id;
+        console.log(user)
+
         const { page = 1, pageSize = 5 } = req.query; // Default to page 1 and 10 items per page
 
         // Convert query params to integers
