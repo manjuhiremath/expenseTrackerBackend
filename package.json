@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
- "scripts": {
-  "start": "node app.js",
-  "dev": "nodemon app.js",
-  "test": "jest"
-},
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest"
+  },
   "author": "",
   "license": "ISC",
   "description": "",
@@ -26,6 +26,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.11.5",
     "nodemon": "^3.1.9",
+    "path": "^0.12.7",
     "pdfmake": "^0.2.16",
     "razorpay": "^2.9.5",
     "sequelize": "^6.37.5",

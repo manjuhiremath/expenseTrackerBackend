@@ -6,7 +6,7 @@ import { sequelize } from './config/database.js';
 import helmet from 'helmet';
 import compression from 'compression';
 // import fs from "fs";
-// import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 //Routes
 import loginRouter from './routes/userLogin.js';
 import expenseRouter from './routes/expense.js'
@@ -15,19 +15,20 @@ import { Users } from './models/User.js';
 import { Expense } from './models/expense.js';
 import { Orders } from './models/orders.js';
 import { forgotPasswordRequests } from './models/forgotPasswordRequests.js';
+import path from 'path';
 // import morgan from 'morgan';
 // import path from 'path';
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:5501",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 dotenv.config();
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // const logsData = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: 'a' });
 
 app.use(helmet());
@@ -38,8 +39,8 @@ app.use(json());
 app.use("/api/premium", orderRoutes);
 app.use("/api/expense", expenseRouter);
 app.use("/api", loginRouter);
-app.get("/", (req, res) => {
-  res.json("Welcome to Expense Tracker!!!!");
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', path.normalize(req.url)));
 });
 
 const start = async () => {
